@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Phone, SmilePlus, Bell, UserPlus } from "lucide-react";
 import { KpiCard } from "@/components/kpi-card";
 import { CallsTable } from "@/components/calls-table";

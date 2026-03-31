@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { getSupabase } from "./supabase";
 import type {
   CallWithAnalytics,
   ContactWithCalls,
@@ -15,6 +15,7 @@ function normalizeCallRow(row: Record<string, unknown>): CallWithAnalytics {
 }
 
 export async function getDashboardStats() {
+  const supabase = getSupabase();
   const [callsRes, analyticsRes, followUpsRes, contactsRes] = await Promise.all(
     [
       supabase
@@ -50,6 +51,7 @@ export async function getDashboardStats() {
 export async function getRecentCalls(
   limit = 10
 ): Promise<CallWithAnalytics[]> {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from("inbound_calls")
     .select("*, call_analytics(*)")
@@ -71,6 +73,7 @@ export async function getAllCalls(
   dateFrom?: string,
   dateTo?: string
 ) {
+  const supabase = getSupabase();
   let query = supabase
     .from("inbound_calls")
     .select("*, call_analytics(*)", { count: "exact" })
@@ -100,6 +103,7 @@ export async function getAllCalls(
 export async function getCallById(
   id: string
 ): Promise<CallWithAnalytics | null> {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from("inbound_calls")
     .select("*, call_analytics(*)")
@@ -111,6 +115,7 @@ export async function getCallById(
 }
 
 export async function getAllContacts(page = 1, limit = 20) {
+  const supabase = getSupabase();
   const { data, error, count } = await supabase
     .from("contacts")
     .select("*", { count: "exact" })
@@ -127,6 +132,7 @@ export async function getAllContacts(page = 1, limit = 20) {
 export async function getContactById(
   id: string
 ): Promise<ContactWithCalls | null> {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from("contacts")
     .select("*, inbound_calls(*, call_analytics(*))")
@@ -147,6 +153,7 @@ export async function updateContact(
   id: string,
   fields: { name?: string; email?: string; company?: string }
 ) {
+  const supabase = getSupabase();
   const { error } = await supabase
     .from("contacts")
     .update(fields)
@@ -157,6 +164,7 @@ export async function updateContact(
 export async function getFollowUps(
   doneFilter?: "pending" | "completed" | "all"
 ): Promise<FollowUpWithContact[]> {
+  const supabase = getSupabase();
   let query = supabase
     .from("follow_ups")
     .select("*, contacts(*)")
@@ -174,6 +182,7 @@ export async function getFollowUps(
 }
 
 export async function markFollowUpDone(id: string) {
+  const supabase = getSupabase();
   const { error } = await supabase
     .from("follow_ups")
     .update({ done: true })
@@ -182,6 +191,7 @@ export async function markFollowUpDone(id: string) {
 }
 
 export async function getSentimentOverTime() {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from("call_analytics")
     .select("sentiment_score, created_at")
@@ -208,6 +218,7 @@ export async function getSentimentOverTime() {
 }
 
 export async function getCallVolumeByDay() {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from("inbound_calls")
     .select("created_at")
@@ -230,6 +241,7 @@ export async function getCallVolumeByDay() {
 }
 
 export async function getKeywordFrequency() {
+  const supabase = getSupabase();
   const { data, error } = await supabase
     .from("call_analytics")
     .select("extracted_keywords");
@@ -255,6 +267,7 @@ export async function getKeywordFrequency() {
 }
 
 export async function searchContacts(query: string, page = 1, limit = 20) {
+  const supabase = getSupabase();
   const { data, error, count } = await supabase
     .from("contacts")
     .select("*", { count: "exact" })

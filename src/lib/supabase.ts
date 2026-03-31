@@ -1,7 +1,13 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+export function getSupabase() {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+  if (!url || !key) {
+    throw new Error("Missing Supabase environment variables");
+  }
+
+  return createClient(url, key);
+}
